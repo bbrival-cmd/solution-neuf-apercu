@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programmes immobiliers neufs en France — Solution Neuf</title>
+  <meta name="description" content="Recherchez parmi plus de 3 000 programmes neufs : appartements et maisons, PTZ, TVA 5,5 %, Jeanbrun, LMNP en résidences gérées.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
+  <link rel="stylesheet" href="assets/style.css"><link rel="stylesheet" href="assets/theme.css">
+</head>
+<body>
+<div id="hdr"></div>
+
+<div style="background:var(--navy-ink);color:#fff">
+  <div class="wrap" style="padding-top:46px;padding-bottom:46px">
+    <div class="eyebrow" style="color:var(--champagne)">Moteur de recherche</div>
+    <h1 style="font-size:clamp(30px,4vw,46px);margin-top:14px;color:#fff" id="pageTitle">Programmes immobiliers neufs</h1>
+  </div>
+</div>
+
+<div class="wrap results-layout">
+  <aside class="filters" id="filters">
+    <h4>Localisation</h4>
+    <input type="text" id="fq" placeholder="Ville, code postal, département" list="cities" autocomplete="off">
+    <datalist id="cities"></datalist>
+    <h4>Votre projet</h4>
+    <div class="chips" data-f="projet"><button class="chip" data-v="habiter">Habiter</button><button class="chip" data-v="investir">Investir</button></div>
+    <h4>Type de bien</h4>
+    <div class="chips" data-f="nat" data-multi><button class="chip" data-v="ap">Appartement</button><button class="chip" data-v="ma">Maison</button></div>
+    <h4>Nombre de pièces</h4>
+    <div class="chips" data-f="t" data-multi><button class="chip" data-v="T1">Studio/T1</button><button class="chip" data-v="T2">T2</button><button class="chip" data-v="T3">T3</button><button class="chip" data-v="T4">T4</button><button class="chip" data-v="T5">T5+</button></div>
+    <h4>Budget maximum</h4>
+    <select id="fmax"><option value="">Sans limite</option><option value="150000">150 000 €</option><option value="200000">200 000 €</option><option value="250000">250 000 €</option><option value="300000">300 000 €</option><option value="400000">400 000 €</option><option value="500000">500 000 €</option><option value="750000">750 000 €</option></select>
+    <h4>Dispositif</h4>
+    <select id="flaw"><option value="">Tous</option></select>
+    <h4>Type de résidence</h4>
+    <select id="fres"><option value="">Indifférent</option><option value="*">Toutes les résidences avec services</option></select>
+    <h4>Livraison</h4>
+    <div class="chips" data-f="liv"><button class="chip" data-v="now">Livré</button><button class="chip" data-v="2026">2026</button><button class="chip" data-v="2027">2027</button><button class="chip" data-v="2028">2028 et +</button></div>
+    <button class="reset" id="reset">Réinitialiser les filtres</button>
+    <button class="btn btn-navy filters-toggle" style="width:100%;margin-top:20px" onclick="filters.classList.remove('open')">Voir les résultats</button>
+  </aside>
+
+  <main class="results">
+    <div class="rbar">
+      <div><b id="count">…</b> <span style="color:var(--muted)" id="countLots"></span></div>
+      <div class="tools">
+        <button class="btn btn-line filters-toggle" onclick="filters.classList.add('open')">Filtres</button>
+        <select id="sort"><option value="recent">Plus récents</option><option value="asc">Prix croissant</option><option value="desc">Prix décroissant</option><option value="lots">Plus de choix</option></select>
+        <div class="toggle"><button class="on" data-v="list">Liste</button><button data-v="map">Carte</button></div>
+      </div>
+    </div>
+    <div id="map"></div>
+    <div class="grid" id="list"></div>
+    <div class="more"><button class="btn btn-line" id="more">Afficher plus de programmes</button></div>
+  </main>
+</div>
+
+<div id="ftr"></div>
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script src="assets/app.js"></script><script src="assets/theme.js"></script>
+<script>
+SN.chrome("prog");
+const PAGE = 24;
+const qs = new URLSearchParams(location.search);
+const st = {
+  q: qs.get("q") || "", projet: qs.get("projet") || "", t: (qs.get("t") || "").split(",").filter(Boolean),
+  nat: (qs.get("nat") || "").split(",").filter(Boolean),
+  max: qs.get("max") || "", law: qs.get("law") || "", res: qs.get("gere") ? "*" : (qs.get("res") || ""),
+  liv: qs.get("liv") || "", sort: qs.get("sort") || "recent", n: PAGE, view: "list",
+};
+const norm = (s) => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[-']/g, " ").trim();
+let ALL = [], map, cluster;
+
+function match(p) {
+  if (st.q) {
+    const q = norm(st.q);
+    const hit = /^\d{2,5}$/.test(q) ? (q.length <= 3 ? p.d === q.padStart(2, "0") || (p.z || "").startsWith(q) : (p.z || "").startsWith(q))
+      : norm(p.c).includes(q) || norm(p.n).includes(q);
+    if (!hit) return false;
+  }
+  if (st.projet === "habiter" && !p.l.some((l) => SN.HABITER.includes(l))) return false;
+  if (st.projet === "investir" && !p.l.some((l) => SN.INVESTIR.includes(l))) return false;
+  if (st.nat.length && !st.nat.some((n) => (p.nt || []).includes(n))) return false;
+  if (st.t.length && !st.t.some((t) => t === "T5" ? p.t.some((x) => /^T[5-9]/.test(x)) : p.t.includes(t))) return false;
+  if (st.max && !(p.a && p.a <= +st.max)) return false;
+  if (st.law && !p.l.includes(st.law)) return false;
+  if (st.res === "*" && !p.r) return false;
+  if (st.res && st.res !== "*" && p.r !== st.res) return false;
+  if (st.liv) {
+    const y = p.q ? +p.q.slice(0, 4) : 0;
+    if (st.liv === "now" ? !(p.dl || (y && y < 2026)) : st.liv === "2028" ? y < 2028 : y !== +st.liv) return false;
+  }
+  return true;
+}
+
+function sorted(arr) {
+  const s = st.sort, a = [...arr];
+  if (s === "asc") a.sort((x, y) => (x.a || 9e9) - (y.a || 9e9));
+  if (s === "desc") a.sort((x, y) => (y.a || 0) - (x.a || 0));
+  if (s === "lots") a.sort((x, y) => y.k - x.k);
+  return a;
+}
+
+function syncUrl() {
+  const u = new URLSearchParams();
+  if (st.q) u.set("q", st.q); if (st.projet) u.set("projet", st.projet); if (st.t.length) u.set("t", st.t.join(",")); if (st.nat.length) u.set("nat", st.nat.join(","));
+  if (st.max) u.set("max", st.max); if (st.law) u.set("law", st.law); if (st.res) u.set("res", st.res);
+  if (st.liv) u.set("liv", st.liv); if (st.sort !== "recent") u.set("sort", st.sort);
+  history.replaceState(null, "", "?" + u.toString());
+}
+
+function render() {
+  const res = sorted(ALL.filter(match));
+  const fr = (n) => n.toLocaleString("fr-FR").replace(/ /g, " ");
+  document.getElementById("count").textContent = `${fr(res.length)} programme${res.length > 1 ? "s" : ""}`;
+  document.getElementById("countLots").textContent = `· ${fr(res.reduce((s, p) => s + p.k, 0))} logements disponibles`;
+  const where = st.q ? ` à ${SN.title(st.q)}` : "";
+  const natT = st.nat.length === 1 ? (st.nat[0] === "ma" ? "Maisons neuves" : "Appartements neufs") : "";
+  document.getElementById("pageTitle").textContent =
+    (natT || (st.projet === "investir" ? "Investir dans le neuf" : st.projet === "habiter" ? "Acheter sa résidence principale" : "Programmes immobiliers neufs")) + where;
+  const list = document.getElementById("list");
+  if (!res.length) {
+    list.innerHTML = `<div class="empty" style="grid-column:1/-1"><b style="color:var(--navy-deep);font-size:18px">Aucun programme ne correspond… pour l'instant.</b><p>Nos conseillers ont accès à des programmes en avant-première. Décrivez votre projet, on cherche pour vous.</p><a class="btn btn-cta" href="#" data-lead="no-result">Lancer une recherche personnalisée</a></div>`;
+  } else {
+    const cards = res.slice(0, st.n).map(SN.card);
+    cards.splice(Math.min(6, cards.length), 0, `<div class="inline-cta"><div><b>Vous ne trouvez pas exactement ?</b><span>Un conseiller vous envoie une sélection sur mesure, avec les offres promoteurs du moment.</span></div><a class="btn btn-cta" href="#" data-lead="results-inline">Être rappelé</a></div>`);
+    list.innerHTML = cards.join("");
+  }
+  document.getElementById("more").style.display = res.length > st.n ? "" : "none";
+  if (st.view === "map") drawMap(res);
+  syncUrl();
+}
+
+function drawMap(res) {
+  if (!map) {
+    map = L.map("map", { scrollWheelZoom: true }).setView([46.6, 2.4], 6);
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: "© OpenStreetMap", maxZoom: 18 }).addTo(map);
+    cluster = L.markerClusterGroup({ showCoverageOnHover: false }); map.addLayer(cluster);
+  }
+  cluster.clearLayers();
+  const pts = res.filter((p) => p.lat && p.lng).map((p) => L.circleMarker([p.lat, p.lng], { radius: 7, color: "#fff", weight: 2, fillColor: getComputedStyle(document.documentElement).getPropertyValue("--navy").trim() || "#314975", fillOpacity: 1 })
+    .bindPopup(`<div class="pop">${p.img ? `<img src="${p.img}" alt="">` : ""}<b>${SN.esc(SN.title(p.n))}</b>${SN.esc(SN.title(p.c))} · ${p.a ? "dès " + SN.eur(p.a) : ""}<br><a href="${SN.url(p)}">Voir le programme →</a></div>`));
+  cluster.addLayers(pts);
+  // Cadrage sur la métropole par défaut ; l'Outre-mer reste visible en dézoomant
+  const metro = res.filter((p) => p.lat > 41 && p.lat < 51.5 && p.lng > -5.5 && p.lng < 10);
+  const fit = metro.length ? metro : res.filter((p) => p.lat && p.lng);
+  if (fit.length) map.fitBounds(L.latLngBounds(fit.map((p) => [p.lat, p.lng])), { maxZoom: 12, padding: [30, 30] });
+  setTimeout(() => map.invalidateSize(), 50);
+}
+
+/* ---------- Liaison des filtres ---------- */
+function paintChips() {
+  document.querySelectorAll(".chips").forEach((g) => {
+    const f = g.dataset.f, v = st[f];
+    g.querySelectorAll(".chip").forEach((c) => c.classList.toggle("on", Array.isArray(v) ? v.includes(c.dataset.v) : v === c.dataset.v));
+  });
+}
+document.querySelectorAll(".chips").forEach((g) => g.addEventListener("click", (e) => {
+  const c = e.target.closest(".chip"); if (!c) return;
+  const f = g.dataset.f, v = c.dataset.v;
+  if ("multi" in g.dataset) st[f] = st[f].includes(v) ? st[f].filter((x) => x !== v) : [...st[f], v];
+  else st[f] = st[f] === v ? "" : v;
+  st.n = PAGE; paintChips(); render();
+}));
+const bind = (id, key) => { const el = document.getElementById(id); el.value = st[key]; el.addEventListener(el.tagName === "INPUT" ? "input" : "change", () => { st[key] = el.value; st.n = PAGE; render(); }); };
+document.getElementById("more").onclick = () => { st.n += PAGE; render(); };
+document.getElementById("reset").onclick = () => {
+  Object.assign(st, { q: "", projet: "", t: [], nat: [], max: "", law: "", res: "", liv: "", n: PAGE });
+  ["fq", "fmax", "flaw", "fres"].forEach((id) => document.getElementById(id).value = ""); paintChips(); render();
+};
+document.querySelectorAll(".toggle button").forEach((b) => b.onclick = () => {
+  st.view = b.dataset.v;
+  document.querySelectorAll(".toggle button").forEach((x) => x.classList.toggle("on", x === b));
+  document.getElementById("map").classList.toggle("show", st.view === "map");
+  render();
+});
+
+SN.catalog().then(({ programs }) => {
+  ALL = programs;
+  const laws = {}; programs.forEach((p) => p.l.forEach((l) => laws[l] = (laws[l] || 0) + 1));
+  document.getElementById("flaw").innerHTML += Object.entries(laws).filter(([, n]) => n >= 4).sort((a, b) => b[1] - a[1])
+    .map(([l, n]) => `<option value="${SN.esc(l)}">${SN.esc(l)} (${n})</option>`).join("");
+  const res = {}; programs.forEach((p) => p.r && (res[p.r] = (res[p.r] || 0) + 1));
+  document.getElementById("fres").innerHTML += Object.entries(res).sort((a, b) => b[1] - a[1]).map(([r, n]) => `<option value="${r}">${r} (${n})</option>`).join("");
+  document.getElementById("cities").innerHTML = [...new Set(programs.map((p) => SN.title(p.c)))].sort().map((c) => `<option value="${SN.esc(c)}">`).join("");
+  bind("fq", "q"); bind("fmax", "max"); bind("flaw", "law"); bind("fres", "res"); bind("sort", "sort");
+  paintChips(); render();
+});
+</script>
+</body>
+</html>

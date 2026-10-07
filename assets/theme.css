@@ -1,0 +1,128 @@
+/* V3 « Carte vivante » — charte Solution Neuf : Blue #1C325B · Light Blue #2AABE3 · Montserrat */
+:root {
+  --navy: #1C325B;          /* Blue (charte) */
+  --navy-deep: #1C325B;
+  --navy-ink: #142645;      /* nuance foncée du Blue pour les grands aplats */
+  --gold: #2AABE3;          /* Light Blue (charte) — remplace les accents dorés */
+  --champagne: #2AABE3;
+  --champagne-soft: #e6f5fc;
+  --orange: #2AABE3;        /* les boutons d'action passent en Light Blue */
+  --orange-hover: #1d97cc;
+  --sky: #eef7fc;
+  --paper: #ffffff;
+  --ink: #1C325B;
+  --muted: #5b6a85;
+  --line: #e1e9f2;
+  --radius: 14px;
+  --display: "Montserrat", Arial, sans-serif;
+  /* Motif hexagonal de la charte */
+  --hex: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='97' viewBox='0 0 56 97'%3E%3Cpath d='M28 0v32M28 32 0 48.5M28 32l28 16.5M0 48.5v32M56 48.5v32M0 80.5 28 97M56 80.5 28 97' fill='none' stroke='%231C325B' stroke-opacity='.07' stroke-width='1.2'/%3E%3C/svg%3E");
+}
+body { background: #fff; color: var(--ink); }
+h1, h2, h3, .card h3, .prog h1 { font-family: var(--display); font-weight: 800; letter-spacing: -.02em; color: var(--navy); }
+/* Titre gras bleu + sous-titre italique bleu clair (exemple de la charte) */
+h2 em, h1 em { font-style: italic; font-weight: 400; color: var(--gold); }
+.eyebrow { color: var(--gold); }
+.btn { border-radius: 40px; text-transform: none; letter-spacing: 0; font-size: 15px; }
+.btn-cta { background: var(--gold); color: #fff; }
+.btn-cta:hover { background: var(--orange-hover); color: #fff; }
+.btn-navy { background: var(--navy); }
+.btn-line { color: var(--navy); box-shadow: inset 0 0 0 1.5px var(--navy); }
+.top { background: rgba(255,255,255,.94); border-bottom-color: var(--line); }
+.brand img { width: auto; height: 42px; border-radius: 0; }
+.brand b { color: var(--navy); font-weight: 800; letter-spacing: .04em; }
+.brand small { color: var(--gold); letter-spacing: .42em; font-weight: 300; font-size: 10px; }
+.nav a:not(.btn)::after { background: var(--gold); }
+.nav .tel { color: var(--navy); }
+.card { border-radius: 18px; border-color: var(--line); }
+.card .ph { margin: 8px; border-radius: 12px; overflow: hidden; }
+.card .tag { border-radius: 30px; background: rgba(28,50,91,.88); color: #fff; }
+.card .tag.r { background: var(--gold); color: #fff; }
+.card .loc { color: var(--gold); }
+.card .price b { color: var(--navy); }
+.facts, table.lots, .lead-form, .inline-cta, .empty, .step, #map, #pmap { border-radius: 18px; overflow: hidden; }
+.facts span, .lots th, .fld span, .filters h4, .search label span { color: var(--gold); }
+.filters { border-radius: 18px; overflow: auto; }
+@media (min-width: 861px) { .filters { position: static; max-height: none; overflow: visible; } }
+.chip.on, .choice input:checked + span { background: var(--navy); border-color: var(--navy); color: #fff; }
+.fld input, .fld select, .fld textarea, .filters input[type=text], .filters select { border-radius: 10px; background: var(--sky); border-color: transparent; }
+.laws span { background: var(--sky); color: var(--navy); }
+.inline-cta { background: var(--sky); border-left-color: var(--gold); }
+.presented { background: var(--navy); }
+.presented img { width: auto; height: 34px; }
+.presented b { color: var(--gold); }
+.addr svg, .addr a { color: var(--gold); }
+.lots .tva { color: #1d7fae; }
+.wa-float { display: none; }
+
+/* Pied de page : bandeau en biseau de la charte */
+footer { background: var(--navy-ink); position: relative; overflow: hidden; }
+footer::after { content: ""; position: absolute; right: -40px; bottom: 0; width: 58%; height: 26px; background: var(--gold); transform: skewX(-35deg); transform-origin: bottom; }
+footer .legal { position: relative; z-index: 1; padding-bottom: 20px; }
+footer h5 { color: var(--gold); }
+footer a:hover { color: var(--gold); }
+footer .brand b { color: #fff !important; }
+
+/* Bulle de discussion WhatsApp */
+.wa-widget { position: fixed; right: 22px; bottom: 22px; z-index: 85; font-family: "Montserrat", Arial; }
+.wa-widget .fab {
+  width: 64px; height: 64px; border-radius: 50%; border: 0; background: #25d366; color: #fff; cursor: pointer; display: grid; place-items: center;
+  box-shadow: 0 16px 34px -10px rgba(7,59,29,.6); margin-left: auto; position: relative;
+}
+.wa-widget .fab svg { width: 32px; height: 32px; }
+.wa-widget .fab b { position: absolute; top: -2px; right: -2px; background: var(--navy); color: #fff; width: 22px; height: 22px; border-radius: 50%; font-size: 12px; display: grid; place-items: center; }
+.wa-widget .box {
+  width: 340px; max-width: calc(100vw - 32px); background: #efeae2; border-radius: 20px; overflow: hidden; margin-bottom: 14px;
+  box-shadow: 0 30px 70px -20px rgba(20,38,69,.45); transform-origin: bottom right; transform: scale(.6) translateY(20px); opacity: 0; pointer-events: none; transition: .3s cubic-bezier(.2,.8,.2,1);
+}
+.wa-widget.open .box { transform: none; opacity: 1; pointer-events: auto; }
+.wa-widget .hd { background: #075e54; color: #fff; padding: 16px; display: flex; gap: 12px; align-items: center; }
+.wa-widget .hd img { width: 42px; height: 42px; border-radius: 50%; background: #fff; padding: 8px; box-sizing: border-box; object-fit: contain; }
+.wa-widget .hd small { display: block; opacity: .85; font-size: 12px; }
+.wa-widget .hd small::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #6fe39b; margin-right: 6px; }
+.wa-widget .hd button { margin-left: auto; background: none; border: 0; color: #fff; font-size: 24px; cursor: pointer; }
+.wa-widget .bd { padding: 16px; display: grid; gap: 8px; }
+.wa-widget .bubble { background: #fff; padding: 10px 12px; border-radius: 0 10px 10px 10px; font-size: 14px; line-height: 1.45; color: #111b21; max-width: 90%; }
+.wa-widget .qr { display: block; text-align: right; text-decoration: none; background: #d9fdd3; color: #0b3d1f; padding: 10px 12px; border-radius: 10px 0 10px 10px; font-size: 13.5px; font-weight: 600; justify-self: end; max-width: 90%; transition: .2s; }
+.wa-widget .qr:hover { background: #c3f5bb; }
+.wa-widget .ft { padding: 0 16px 16px; }
+.wa-widget .ft a { display: flex; gap: 8px; justify-content: center; align-items: center; background: #25d366; color: #073b1d; text-decoration: none; font-weight: 700; padding: 13px; border-radius: 30px; }
+
+/* Trustpilot */
+.tp-badge { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: var(--navy); font-size: 14px; font-weight: 600; flex-wrap: wrap; }
+.tp-stars { display: inline-flex; gap: 2px; }
+.tp-stars i { width: 20px; height: 20px; background: #dcdce6; display: grid; place-items: center; position: relative; overflow: hidden; }
+.tp-stars i::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: var(--f, 100%); background: #00b67a; }
+.tp-stars i::after { content: ""; position: relative; width: 13px; height: 13px; background: #fff; clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
+.tp-logo { font-weight: 700; color: #191919; display: inline-flex; align-items: center; gap: 3px; }
+.tp-logo::before { content: "★"; color: #00b67a; font-size: 18px; }
+.reviews { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.review { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 24px; display: flex; flex-direction: column; gap: 12px; text-decoration: none; color: var(--ink); transition: .25s; }
+.review:hover { transform: translateY(-3px); box-shadow: 0 20px 40px -24px rgba(20,38,69,.35); }
+.review h4 { margin: 0; font-size: 17px; color: var(--navy); }
+.review p { margin: 0; font-size: 15px; color: #3b4863; line-height: 1.6; }
+.review small { color: var(--muted); margin-top: auto; }
+
+/* YouTube : encart chaîne + liste éditoriale, sans miniatures */
+.yt-block { display: grid; grid-template-columns: 380px 1fr; gap: 0; border-radius: 22px; overflow: hidden; border: 1px solid var(--line); background: #fff; }
+.yt-channel { background: var(--navy) var(--hex); color: #fff; padding: 40px 36px; display: flex; flex-direction: column; gap: 14px; position: relative; }
+.yt-channel img { width: 64px; height: auto; margin-bottom: 6px; }
+.yt-channel h3 { color: #fff; font-size: 28px; line-height: 1.15; margin: 0; }
+.yt-channel h3 em { color: var(--gold); font-style: italic; font-weight: 400; }
+.yt-channel p { margin: 0; color: rgba(255,255,255,.78); font-size: 15px; }
+.yt-channel .btn { align-self: flex-start; margin-top: 8px; }
+.yt-channel .btn svg { width: 20px; height: 20px; }
+.yt-all { color: #fff; opacity: .8; font-weight: 600; font-size: 14px; text-decoration: none; }
+.yt-all:hover { opacity: 1; color: var(--gold); }
+.yt-list { list-style: none; margin: 0; padding: 14px 0; display: grid; grid-template-columns: 1fr 1fr; align-content: center; }
+.yt-list a { display: flex; align-items: center; gap: 18px; padding: 20px 30px; text-decoration: none; color: var(--navy); border-bottom: 1px solid var(--line); transition: background .2s; height: 100%; box-sizing: border-box; }
+.yt-list li:nth-last-child(-n+2) a { border-bottom: 0; }
+.yt-list a:hover { background: var(--sky); }
+.yt-list .n { font-weight: 800; font-size: 22px; color: var(--gold); min-width: 30px; }
+.yt-list .t { flex: 1; font-weight: 700; font-size: 15.5px; line-height: 1.35; }
+.yt-list .t small { display: block; font-weight: 600; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.yt-list .pl { width: 34px; height: 34px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--line); flex: none; display: grid; place-items: center; transition: .2s; }
+.yt-list .pl::after { content: ""; border-left: 9px solid var(--navy); border-top: 6px solid transparent; border-bottom: 6px solid transparent; margin-left: 3px; }
+.yt-list a:hover .pl { background: var(--gold); box-shadow: none; }
+.yt-list a:hover .pl::after { border-left-color: #fff; }
+@media (max-width: 960px) { .yt-block { grid-template-columns: 1fr; } .yt-list { grid-template-columns: 1fr; } .yt-list li:nth-last-child(2) a { border-bottom: 1px solid var(--line); } }

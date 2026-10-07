@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="150 110 1420 980">
+<style>@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;800');</style>
+<defs><clipPath id="c-full"><rect x="400" y="100" width="900" height="648"/></clipPath></defs>
+  <path d="M499 680 V168 H752" fill="none" stroke="#2AABE3" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
+  <g clip-path="url(#c-full)" stroke="#1C325B"><line x1="897.0" y1="248.0" x2="596.8" y2="788.0" stroke-width="159" stroke-linecap="round"/><line x1="1008.7" y1="472.5" x2="833.3" y2="788.0" stroke-width="159" stroke-linecap="round"/><line x1="1137.6" y1="661.5" x2="1067.3" y2="788.0" stroke-width="159" stroke-linecap="round"/></g>
+  <circle cx="1108" cy="312" r="80" fill="#2AABE3"/>
+<text x="858" y="965" text-anchor="middle" font-family="Montserrat, Arial, sans-serif" font-weight="800" font-size="150" fill="#1C325B" letter-spacing="2">SOLUTION NEUF</text>
+<text x="858" y="1050" text-anchor="middle" font-family="Montserrat, Arial, sans-serif" font-weight="300" font-size="58" fill="#2AABE3" letter-spacing="22">iMMOBILIER</text></svg>

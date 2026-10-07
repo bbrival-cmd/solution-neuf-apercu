@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Programme neuf — Solution Neuf</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="assets/style.css"><link rel="stylesheet" href="assets/theme.css">
+</head>
+<body>
+<div id="hdr"></div>
+
+<div class="wrap" id="page">
+  <div class="crumbs"><a href="programmes.html">Programmes neufs</a> › <span id="crumb">…</span></div>
+  <div class="gallery" id="gallery"></div>
+  <div class="prog">
+    <article>
+      <div class="eyebrow" id="loc"></div>
+      <h1 id="name"></h1>
+      <div class="addr" id="addr"></div>
+      <div style="color:var(--muted)" id="sub"></div>
+      <div class="facts" id="facts"></div>
+
+      <div class="laws" id="laws"></div>
+
+      <h2>Le programme</h2>
+      <div class="desc clamp" id="desc"></div>
+      <button class="linkbtn" id="descMore">Lire la suite</button>
+
+      <h2>Logements disponibles <span style="font-weight:400;color:var(--muted);font-size:18px" id="lotsCount"></span></h2>
+      <div id="lots"></div>
+      <p class="note">Prix indicatifs, parkings inclus selon les lots. Les prix en TVA réduite sont soumis à conditions d'éligibilité (zone, plafonds de ressources). Plan détaillé et grille complète sur demande.</p>
+
+      <div id="mediaWrap" style="display:none"><h2>Vidéo</h2><div class="media" id="media"></div></div>
+
+      <h2>Localisation</h2>
+      <div id="pmap"></div>
+      <p class="note" id="addrNote"></p>
+
+      <h2>Programmes à proximité</h2>
+      <div class="grid" id="near" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr))"></div>
+    </article>
+
+    <aside class="aside">
+      <div class="presented"><img src="assets/brand/symbol-light.svg" alt=""><div>Ce programme vous est présenté par<b>SOLUTION NEUF</b></div></div>
+      <div class="lead-form" id="sideLead"></div>
+      <a class="btn btn-wa" id="waBtn" href="#" target="_blank" rel="noopener" style="display:none"></a>
+      <a class="call" href="tel:+33184809405">ou appelez le 01 84 80 94 05</a>
+      <div id="tpAside" style="margin-top:18px;text-align:center"></div>
+    </aside>
+  </div>
+</div>
+
+<div class="lightbox" id="lb"><button class="c" aria-label="Fermer">×</button><button class="p" aria-label="Précédente">‹</button><img alt=""><button class="n" aria-label="Suivante">›</button></div>
+<div id="ftr"></div>
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="assets/app.js"></script><script src="assets/theme.js"></script>
+<script>
+SN.chrome("prog");
+const id = new URLSearchParams(location.search).get("id");
+const $ = (s) => document.getElementById(s);
+
+Promise.all([
+  fetch(`${SN.ROOT}data/p/${id}.json`).then((r) => r.ok ? r.json() : null).catch(() => null),
+  SN.catalog(),
+]).then(([d, { programs }]) => {
+  const base = programs.find((p) => p.id === id);
+  const p = d || base;
+  if (!p) { $("page").innerHTML = `<div class="empty" style="margin:60px 0">Ce programme n'est plus disponible. <a href="programmes.html">Voir les autres programmes</a></div>`; return; }
+  if (p.a && p.a < 30000) p.a = null; // prix d'un parking, pas d'un logement
+  if (d?.lots) d.lots = d.lots.filter((l) => !/parking|cave|box|garage/i.test(l.na || ""));
+  window.SN_PROGRAM = p;
+  const city = SN.title(p.c), name = SN.title(p.n);
+  document.title = `${name} — Programme neuf à ${city} (${p.d}) | Solution Neuf`;
+  $("crumb").textContent = `${city} (${p.d})`;
+  $("loc").textContent = `${city} · ${p.d}${p.r ? " · " + p.r : ""}`;
+  $("name").textContent = name;
+  const fullAddr = [p.addr, [p.z, city].filter(Boolean).join(" ")].filter(Boolean).join(", ");
+  const gmaps = p.lat ? `https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}` : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddr)}`;
+  $("addr").innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>${SN.esc(fullAddr)} · <a href="${gmaps}" target="_blank" rel="noopener">Itinéraire</a>`;
+  $("addrNote").innerHTML = `${SN.esc(fullAddr)} — <a href="${gmaps}" target="_blank" rel="noopener">ouvrir dans Google Maps</a>`;
+  $("sub").textContent = `${SN.typos(p.t)} · ${p.k} logement${p.k > 1 ? "s" : ""} disponible${p.k > 1 ? "s" : ""}`;
+  $("facts").innerHTML = [
+    ["À partir de" + (p.at ? " · " + p.at : ""), p.a ? SN.eur(p.a) : "Nous consulter"],
+    ["Jusqu'à", p.b ? SN.eur(p.b) : "—"],
+    ["Livraison", SN.quarter(p.q, p.dl)],
+    ["Typologies", SN.typos(p.t) || "—"],
+  ].map(([k, v]) => `<div><span>${k}</span><b>${SN.esc(v)}</b></div>`).join("");
+  $("laws").innerHTML = p.l.map((l) => `<span>${SN.esc(l)}</span>`).join("");
+
+  // Galerie
+  const pics = (d?.gal?.length ? d.gal : [p.img]).filter(Boolean);
+  $("gallery").innerHTML = pics.length ? pics.slice(0, 5).map((u, i) => `<div data-i="${i}" style="background-image:url('${u}')">${i === 0 && pics.length > 1 ? `<span class="all">Voir les ${pics.length} photos</span>` : ""}</div>`).join("")
+    : `<div style="grid-column:1/-1;grid-row:1/-1"></div>`;
+  if (pics.length < 5) $("gallery").style.gridTemplateColumns = pics.length === 1 ? "1fr" : "2fr 1fr";
+  let cur = 0; const lb = $("lb"), show = (i) => { cur = (i + pics.length) % pics.length; lb.querySelector("img").src = pics[cur]; };
+  $("gallery").onclick = (e) => { const t = e.target.closest("[data-i]"); if (t) { show(+t.dataset.i); lb.classList.add("open"); } };
+  lb.querySelector(".c").onclick = () => lb.classList.remove("open");
+  lb.querySelector(".p").onclick = () => show(cur - 1); lb.querySelector(".n").onclick = () => show(cur + 1);
+  document.addEventListener("keydown", (e) => { if (!lb.classList.contains("open")) return; if (e.key === "ArrowRight") show(cur + 1); if (e.key === "ArrowLeft") show(cur - 1); if (e.key === "Escape") lb.classList.remove("open"); });
+
+  // Description
+  const desc = d?.desc || "Description détaillée disponible auprès de votre conseiller.";
+  $("desc").textContent = desc;
+  if (desc.length < 600) { $("desc").classList.remove("clamp"); $("descMore").remove(); }
+  else $("descMore").onclick = (e) => { $("desc").classList.remove("clamp"); e.target.remove(); };
+
+  // Lots
+  const lots = d?.lots || [];
+  $("lotsCount").textContent = `(${lots.length || p.k})`;
+  if (lots.length) {
+    const rows = lots.slice(0, 40).map((l) => {
+      const order = [20, 0, -1, 5.5, 7, 10];
+      const prs = [...l.pr].sort((x, y) => order.indexOf(x.tva) - order.indexOf(y.tva));
+      const full = prs[0], others = prs.slice(1);
+      const ext = l.ter ? `${String(l.ter).replace(".", ",")} m²` : "—";
+      const label = `${l.ty || l.na || "Lot"} · ${l.s ? String(l.s).replace(".", ",") + " m²" : ""}`;
+      return `<tr><td><b>${SN.esc(l.ty || "—")}</b><br><small style="color:var(--muted)">${SN.esc(l.na || "")}</small>${l.opt ? `<br><small style="color:#b4610a;font-weight:700">Sous option</small>` : ""}</td>
+        <td>${l.s ? String(l.s).replace(".", ",") + " m²" : "—"}</td><td>${SN.esc(l.f ?? "—")}</td><td>${ext}</td>
+        <td>${l.pk || "—"}</td><td>${l.ex.join(", ") || "—"}</td>
+        <td><b>${full ? SN.eur(full.p) : "Nous consulter"}</b>${full && full.tva !== 20 ? `<span class="tva" style="color:var(--muted)">${SN.tvaLabel(full.tva)}</span>` : ""}${others.map((o) => `<span class="tva">${SN.eur(o.p)} en ${SN.tvaLabel(o.tva)}</span>`).join("")}</td>
+        <td><a class="btn btn-line" href="#" data-lead="lot" data-lot="${SN.esc(label)}">Plan</a></td></tr>`;
+    }).join("");
+    $("lots").innerHTML = `<table class="lots"><thead><tr><th>Type</th><th>Surface</th><th>Étage</th><th>Extérieur</th><th>Parking</th><th>Expo.</th><th>Prix</th><th></th></tr></thead><tbody>${rows}</tbody></table>
+      ${lots.length > 40 ? `<p style="margin-top:14px"><a class="btn btn-navy" href="#" data-lead="all-lots">Recevoir les ${lots.length} lots disponibles</a></p>` : ""}`;
+  } else {
+    $("lots").innerHTML = `<div class="inline-cta"><div><b>${p.k} logement${p.k > 1 ? "s" : ""} disponible${p.k > 1 ? "s" : ""}</b><span>Recevez la grille de prix à jour et les plans détaillés.</span></div><a class="btn btn-cta" href="#" data-lead="grid">Recevoir la grille</a></div>`;
+  }
+
+  // Vidéo
+  if (d?.yt?.length) { $("mediaWrap").style.display = ""; $("media").innerHTML = d.yt.slice(0, 2).map((u) => `<iframe src="${u}" loading="lazy" allowfullscreen title="Vidéo du programme"></iframe>`).join(""); }
+
+  // Carte : position exacte de la résidence
+  if (p.lat && p.lng) {
+    const m = L.map("pmap", { scrollWheelZoom: false }).setView([p.lat, p.lng], 16);
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: "© OpenStreetMap" }).addTo(m);
+    const pin = L.divIcon({ className: "", iconSize: [34, 44], iconAnchor: [17, 44], popupAnchor: [0, -40],
+      html: `<svg viewBox="0 0 34 44" width="34" height="44"><path d="M17 0C7.6 0 0 7.4 0 16.6 0 29 17 44 17 44s17-15 17-27.4C34 7.4 26.4 0 17 0z" style="fill:var(--navy)"/><circle cx="17" cy="16.5" r="6.5" style="fill:var(--orange)"/></svg>` });
+    L.marker([p.lat, p.lng], { icon: pin }).addTo(m).bindPopup(`<b>${SN.esc(name)}</b><br>${SN.esc(fullAddr)}<br><a href="${gmaps}" target="_blank" rel="noopener">Itinéraire →</a>`).openPopup();
+  } else $("pmap").style.display = "none";
+
+  // À proximité
+  const dist = (a) => Math.hypot(a.lat - p.lat, (a.lng - p.lng) * Math.cos(p.lat * Math.PI / 180));
+  const near = programs.filter((x) => x.id !== p.id && x.lat && x.img && p.lat).sort((a, b) => dist(a) - dist(b)).slice(0, 3);
+  $("near").innerHTML = near.map(SN.card).join("");
+
+  if (SN.FLOAT_WA) { const w = $("waBtn"); w.href = SN.waProgram(p); w.innerHTML = SN.WA_ICON + "Discuter sur WhatsApp"; w.style.display = ""; }
+  SN.social().then(({ trustpilot }) => $("tpAside").innerHTML = SN.tpBadge(trustpilot)).catch(() => {});
+  // Formulaire latéral
+  const ctx = { source: "fiche-programme", program: p };
+  $("sideLead").innerHTML = SN.leadForm(ctx); SN.bindLead($("sideLead"), ctx);
+});
+</script>
+</body>
+</html>
