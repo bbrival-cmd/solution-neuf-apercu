@@ -8,7 +8,8 @@ const SN = {
   PHONE: "01 84 80 94 05",
   PHONE_LINK: "tel:+33184809405",
   // Webhook n8n qui recevra les leads (à brancher à l'étape suivante). Vide = mode aperçu.
-  LEAD_WEBHOOK: "",
+  // Workflow n8n « Site Solution Neuf → GHL (leads) » : contact + tags + note + opportunité GHL, email à Benoît
+  LEAD_WEBHOOK: "https://n8n.srv1404527.hstgr.cloud/webhook/solution-neuf-lead",
   HABITER: ["RP neuf", "PTZ", "TVA réduite", "BRS", "Prix maîtrisé", "PSLA", "Accession abordable"],
   INVESTIR: ["Bailleur privé - Jeanbrun", "LMNP", "LMNP non géré", "LMNP second marché", "Pinel", "Pinel +", "LLI",
     "Nue propriété", "Déficit foncier", "Denormandie", "Malraux", "Monument historique", "Censi Bouvard", "Colocation"],
@@ -113,7 +114,9 @@ SN.leadForm = (ctx = {}) => {
       <label class="fld"><span>Délai</span><select name="delai"><option value="">—</option><option>Dès que possible</option><option>Sous 6 mois</option><option>Dans l'année</option><option>Je me renseigne</option></select></label></div>
     ${p ? "" : `<label class="fld"><span>Ville ou secteur recherché</span><input name="secteur" placeholder="Ex. Lyon, Bordeaux, 92…"></label>`}
     <label class="consent"><input type="checkbox" name="rgpd" required> <span>J'accepte d'être recontacté(e) par Solution Neuf (Cabinet BHB) au sujet de mon projet. Mes données ne sont jamais revendues. <a href="${SN.SITE}politique-de-confidentialite/" target="_blank">En savoir plus</a></span></label>
+    <label aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden">Site web <input name="site_web" tabindex="-1" autocomplete="off"></label>
     <button class="btn btn-cta" type="submit">${ctx.lot ? "Recevoir le plan" : "Être rappelé gratuitement"}</button>
+    <p class="lead-err" role="alert" style="display:none;color:#b42318;font-size:13px;margin:10px 0 0"></p>
   </form>`;
 };
 
@@ -127,13 +130,22 @@ SN.bindLead = (root, ctx = {}) => {
     const p = ctx.program;
     Object.assign(data, {
       source: ctx.source || "site", lot: ctx.lot || "", page: location.href,
-      programme_id: p?.id || "", programme: p ? `${p.n} — ${p.c} (${p.d})` : "", date: new Date().toISOString(),
+      programme_id: p?.id || "", programme: p ? `${SN.title(p.n)} — ${SN.title(p.c)} (${p.d})` : "", date: new Date().toISOString(),
     });
-    f.querySelector("button").disabled = true;
+    const btn = f.querySelector("button[type=submit]"), label = btn.textContent, err = f.querySelector(".lead-err");
+    btn.disabled = true; btn.textContent = "Envoi en cours…"; err.style.display = "none";
+    let sent = false;
     try {
-      if (SN.LEAD_WEBHOOK) await fetch(SN.LEAD_WEBHOOK, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
-      else console.info("[aperçu] lead non envoyé", data);
-    } catch (err) { console.warn(err); }
+      const r = await fetch(SN.LEAD_WEBHOOK, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data), keepalive: true });
+      sent = r.ok;
+    } catch (ex) { console.warn(ex); }
+    if (!sent) {
+      // la demande n'est pas partie : on le dit et on propose les autres canaux
+      btn.disabled = false; btn.textContent = label;
+      err.innerHTML = `L'envoi n'a pas abouti. Réessayez, ou contactez-nous au <a href="${SN.PHONE_LINK}">${SN.PHONE}</a> ou sur <a href="${SN.wa()}" target="_blank" rel="noopener">WhatsApp</a>.`;
+      err.style.display = "block";
+      return;
+    }
     root.innerHTML = (root.id === "leadModalBody" ? `<button class="x" onclick="SN.closeLead()" aria-label="Fermer">×</button>` : "") + `<div class="ok"><div class="ic">✓</div><b>Merci ${SN.esc(data.prenom)} !</b>
       <p>Un conseiller Solution Neuf vous rappelle très vite au ${SN.esc(data.telephone)}.</p>
       <p class="note">Pressé(e) ? Appelez-nous au <a href="${SN.PHONE_LINK}">${SN.PHONE}</a></p></div>`;
