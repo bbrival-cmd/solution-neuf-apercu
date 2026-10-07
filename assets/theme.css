@@ -148,3 +148,9 @@ footer .brand b { color: #fff !important; }
 @keyframes marquee { to { transform: translateX(calc(-50% - 32px)); } }
 @media (max-width: 600px) { .marquee-track { gap: 40px; animation-duration: 40s; } .marquee-track img { height: 34px; max-width: 130px; } .yt-logo { font-size: 22px; } .yt-logo svg { width: 38px; } }
 @media (prefers-reduced-motion: reduce) { .marquee-track { animation: none; flex-wrap: wrap; justify-content: center; width: auto; } .marquee-track li[aria-hidden] { display: none; } }
+
+/* La zone de la bulle ne doit jamais bloquer les clics de la page (formulaire en dessous) */
+.wa-widget { pointer-events: none; }
+.wa-widget .fab, .wa-widget.open .box { pointer-events: auto; }
+/* Ancrages et défilements : ne pas passer sous l'en-tête collant */
+html { scroll-padding-top: 96px; }

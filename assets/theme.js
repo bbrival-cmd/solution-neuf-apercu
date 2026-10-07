@@ -37,7 +37,7 @@ SN.SITE = new URL("..", document.currentScript.src).href;
     try { auto = sessionStorage.getItem("sn-wa-auto") === "1"; } catch (e) {}
     w.addEventListener("pointerenter", () => touched = true);
     const pop = () => {
-      if (auto) return; auto = true; try { sessionStorage.setItem("sn-wa-auto", "1"); } catch (e) {}
+      if (auto || innerWidth < 760) return;   // sur téléphone, la bulle recouvrirait le formulaire : pas d'ouverture automatique auto = true; try { sessionStorage.setItem("sn-wa-auto", "1"); } catch (e) {}
       fill(); w.classList.add("open"); setTimeout(() => { if (!touched) w.classList.remove("open"); }, 8000);
     };
     addEventListener("scroll", () => { const h = document.documentElement; if (h.scrollTop / (h.scrollHeight - h.clientHeight) > .55) pop(); }, { passive: true });
