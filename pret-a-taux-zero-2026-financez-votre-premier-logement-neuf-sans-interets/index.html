@@ -81,7 +81,7 @@
   <a class="btn btn-wa" target="_blank" rel="noopener" data-wa="">Poser ma question sur WhatsApp</a>
   <div data-tp style="margin-top:18px;text-align:center"></div>
 </aside></div><section class="wrap" style="padding:20px 0 90px">
-  <div style="margin-bottom:30px"><div class="eyebrow">Nos conseils en vidéo</div><h2 style="margin-top:14px">Comprendre l'immobilier neuf <em>avant d'acheter</em></h2></div>
+  <div class="vhead"><div><div class="eyebrow">Nos conseils en vidéo</div><h2 style="margin-top:14px">Comprendre l'immobilier neuf <em>avant d'acheter</em></h2></div><span data-ytlogo></span></div>
   <div data-yt-grid></div>
 </section><div id="ftr"></div>
 <script src="../assets/app.js"></script>
@@ -93,6 +93,7 @@ document.querySelectorAll("[data-wa]").forEach((a) => { a.href = SN.wa(a.dataset
 SN.social().then(({ trustpilot: tp, youtube: yt }) => {
   document.querySelectorAll("[data-tp]").forEach((el) => el.innerHTML = SN.tpBadge(tp));
   document.querySelectorAll("[data-yt-grid]").forEach((el) => el.innerHTML = SN.ytBlock(yt));
+  document.querySelectorAll("[data-ytlogo]").forEach((el) => el.innerHTML = SN.ytLogo(yt.url));
 });
 
 </script>

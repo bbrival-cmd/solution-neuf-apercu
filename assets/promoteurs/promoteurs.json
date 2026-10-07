@@ -1,0 +1,162 @@
+[
+ {
+  "name": "Nexity",
+  "file": "nexity.png",
+  "w": 112,
+  "h": 112,
+  "programmes": 322,
+  "caption": false
+ },
+ {
+  "name": "Vinci Immobilier",
+  "file": "vinci-immobilier.png",
+  "w": 360,
+  "h": 93,
+  "programmes": 101,
+  "caption": false
+ },
+ {
+  "name": "Les Nouveaux Constructeurs",
+  "file": "les-nouveaux-constructeurs.png",
+  "w": 189,
+  "h": 112,
+  "programmes": 186,
+  "caption": true
+ },
+ {
+  "name": "GreenCity Immobilier",
+  "file": "greencity-immobilier.png",
+  "w": 360,
+  "h": 92,
+  "programmes": 68,
+  "caption": false
+ },
+ {
+  "name": "Kaufman & Broad",
+  "file": "kaufman-et-broad.png",
+  "w": 360,
+  "h": 92,
+  "programmes": 95,
+  "caption": false
+ },
+ {
+  "name": "Cogedim",
+  "file": "cogedim.png",
+  "w": 360,
+  "h": 51,
+  "programmes": 107,
+  "caption": false
+ },
+ {
+  "name": "Marignan",
+  "file": "marignan.png",
+  "w": 360,
+  "h": 112,
+  "programmes": 132,
+  "caption": false
+ },
+ {
+  "name": "Pichet",
+  "file": "pichet.png",
+  "w": 165,
+  "h": 112,
+  "programmes": 123,
+  "caption": false
+ },
+ {
+  "name": "Edouard Denis",
+  "file": "edouard-denis.png",
+  "w": 308,
+  "h": 112,
+  "programmes": 82,
+  "caption": false
+ },
+ {
+  "name": "Eiffage Immobilier",
+  "file": "groupe-eiffage.png",
+  "w": 131,
+  "h": 112,
+  "programmes": 45,
+  "caption": false
+ },
+ {
+  "name": "Sogeprom",
+  "file": "sogeprom.png",
+  "w": 360,
+  "h": 99,
+  "programmes": 50,
+  "caption": false
+ },
+ {
+  "name": "Crédit Agricole Immobilier",
+  "file": "credit-agricole-immobilier.png",
+  "w": 110,
+  "h": 112,
+  "programmes": 54,
+  "caption": false
+ },
+ {
+  "name": "BNP Paribas Immobilier",
+  "file": "bnp-paribas.png",
+  "w": 360,
+  "h": 75,
+  "programmes": 24,
+  "caption": false
+ },
+ {
+  "name": "Ogic",
+  "file": "ogic.png",
+  "w": 217,
+  "h": 112,
+  "programmes": 26,
+  "caption": false
+ },
+ {
+  "name": "Quartus",
+  "file": "quartus.png",
+  "w": 117,
+  "h": 112,
+  "programmes": 36,
+  "caption": true
+ },
+ {
+  "name": "Spirit",
+  "file": "spirit.png",
+  "w": 227,
+  "h": 112,
+  "programmes": 56,
+  "caption": false
+ },
+ {
+  "name": "Nacarat",
+  "file": "nacarat.png",
+  "w": 360,
+  "h": 94,
+  "programmes": 24,
+  "caption": false
+ },
+ {
+  "name": "Groupe Duval",
+  "file": "groupe-duval.png",
+  "w": 200,
+  "h": 112,
+  "programmes": 41,
+  "caption": false
+ },
+ {
+  "name": "Demathieu Bard",
+  "file": "demathieu-bard.png",
+  "w": 360,
+  "h": 99,
+  "programmes": 52,
+  "caption": false
+ },
+ {
+  "name": "Réalités",
+  "file": "realites-immobilier.png",
+  "w": 360,
+  "h": 66,
+  "programmes": 16,
+  "caption": false
+ }
+]

@@ -44,6 +44,7 @@ document.querySelectorAll("[data-wa]").forEach((a) => { a.href = SN.wa(a.dataset
 SN.social().then(({ trustpilot: tp, youtube: yt }) => {
   document.querySelectorAll("[data-tp]").forEach((el) => el.innerHTML = SN.tpBadge(tp));
   document.querySelectorAll("[data-yt-grid]").forEach((el) => el.innerHTML = SN.ytBlock(yt));
+  document.querySelectorAll("[data-ytlogo]").forEach((el) => el.innerHTML = SN.ytLogo(yt.url));
 });
 
 </script>

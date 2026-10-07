@@ -127,3 +127,24 @@ footer .brand b { color: #fff !important; }
 .yt-list a:hover .pl::after { border-left-color: #fff; }
 @media (max-width: 960px) { .yt-block { grid-template-columns: minmax(0, 1fr); } .yt-list { grid-template-columns: minmax(0, 1fr); } .yt-list li:nth-last-child(2) a { border-bottom: 1px solid var(--line); } }
 @media (max-width: 960px) { .reviews { grid-template-columns: minmax(0, 1fr); } .review { min-width: 0; } }
+
+/* Logo YouTube à droite des titres vidéo */
+.yt-logo { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: #0f0f0f; font: 700 26px/1 "Montserrat", Arial, sans-serif; letter-spacing: -.04em; transition: transform .2s; }
+.yt-logo svg { width: 46px; height: auto; }
+.yt-logo:hover { transform: scale(1.04); }
+.vhead { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; margin-bottom: 30px; }
+
+/* Bandeau des promoteurs */
+.partners { padding: 46px 0 10px; }
+.partners .label { text-align: center; font-size: 12px; letter-spacing: .28em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-bottom: 26px; }
+.partners .label b { color: var(--navy); }
+.marquee { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+.marquee-track { display: flex; align-items: center; gap: 64px; list-style: none; margin: 0; padding: 0; width: max-content; animation: marquee 55s linear infinite; }
+.marquee:hover .marquee-track { animation-play-state: paused; }
+.marquee-track li { display: flex; flex-direction: column; align-items: center; gap: 10px; flex: none; }
+.marquee-track img { height: 46px; width: auto; max-width: 170px; object-fit: contain; opacity: .82; transition: opacity .2s; }
+.marquee-track li:hover img { opacity: 1; }
+.marquee-track span { font-size: 11px; letter-spacing: .08em; color: var(--muted); white-space: nowrap; }
+@keyframes marquee { to { transform: translateX(calc(-50% - 32px)); } }
+@media (max-width: 600px) { .marquee-track { gap: 40px; animation-duration: 40s; } .marquee-track img { height: 34px; max-width: 130px; } .yt-logo { font-size: 22px; } .yt-logo svg { width: 38px; } }
+@media (prefers-reduced-motion: reduce) { .marquee-track { animation: none; flex-wrap: wrap; justify-content: center; width: auto; } .marquee-track li[aria-hidden] { display: none; } }

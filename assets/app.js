@@ -185,3 +185,14 @@ SN.ytBlock = (yt) => `<div class="yt-block">
   <ol class="yt-list">${SN.ytVideos(yt).map((v, i) => `<li><a href="https://www.youtube.com/watch?v=${v.id}" target="_blank" rel="noopener">
     <span class="n">${String(i + 1).padStart(2, "0")}</span><span class="t"><small>${SN.esc(v.c)}</small>${SN.esc(v.t)}</span><span class="pl" aria-hidden="true"></span></a></li>`).join("")}</ol>
 </div>`;
+
+/* ---------- Logo YouTube (lien vers la chaîne) ---------- */
+SN.ytLogo = (url) => `<a class="yt-logo" href="${url}" target="_blank" rel="noopener" aria-label="La chaîne YouTube Solution Neuf">
+  <svg viewBox="0 0 28 20" aria-hidden="true"><path fill="#FF0033" d="M27.4 3.1A3.5 3.5 0 0 0 24.9.6C22.7 0 14 0 14 0S5.3 0 3.1.6A3.5 3.5 0 0 0 .6 3.1C0 5.3 0 10 0 10s0 4.7.6 6.9a3.5 3.5 0 0 0 2.5 2.5C5.3 20 14 20 14 20s8.7 0 10.9-.6a3.5 3.5 0 0 0 2.5-2.5C28 14.7 28 10 28 10s0-4.7-.6-6.9z"/><path fill="#fff" d="M11.2 14.3 18.4 10l-7.2-4.3z"/></svg><span>YouTube</span></a>`;
+
+/* ---------- Bandeau défilant des promoteurs partenaires ---------- */
+SN.promoters = (el) => fetch(SN.ROOT + "assets/promoteurs/promoteurs.json").then((r) => r.json()).then((list) => {
+  const items = list.map((m) => `<li><img src="${SN.ROOT}assets/promoteurs/${m.file}" alt="${SN.esc(m.name)}" width="${Math.round(m.w / 2)}" height="${Math.round(m.h / 2)}" loading="lazy">${m.caption ? `<span>${SN.esc(m.name)}</span>` : ""}</li>`).join("");
+  // liste dupliquée pour une boucle continue sans à-coup
+  el.innerHTML = `<ul class="marquee-track">${items}${items.replace(/<li>/g, '<li aria-hidden="true">')}</ul>`;
+});

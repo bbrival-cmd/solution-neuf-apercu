@@ -144,6 +144,11 @@
   </div>
 </section>
 
+<section class="partners" aria-label="Nos partenaires promoteurs">
+  <div class="label">Les programmes des <b>plus grands promoteurs</b>, dont</div>
+  <div class="marquee" id="partners"></div>
+</section>
+
 <div class="wrap tour">
   <div class="chapters" id="chapters">
     <div class="head"><div class="eyebrow">Le tour de France du neuf</div><h2 style="margin-top:14px">Faites défiler,<br><em>la carte vous suit.</em></h2></div>
@@ -193,7 +198,7 @@
 </section>
 
 <section class="wrap social" id="videos" style="padding-top:60px">
-  <div class="head"><div><div class="eyebrow">Nos conseils en vidéo</div><h2 style="margin-top:14px">Comprendre l'immobilier neuf <em>avant d'acheter</em></h2></div></div>
+  <div class="vhead"><div><div class="eyebrow">Nos conseils en vidéo</div><h2 style="margin-top:14px">Comprendre l'immobilier neuf <em>avant d'acheter</em></h2></div><span id="ytLogo"></span></div>
   <div id="ytGrid"></div>
 </section>
 
@@ -230,6 +235,7 @@ const CITIES = [
   { n: "Montpellier", d: ["34"], c: [43.61, 3.88], z: 11, q: "34" },
 ];
 
+SN.promoters($("partners"));
 SN.social().then(({ trustpilot: tp, youtube: yt }) => {
   $("tpHero").innerHTML = SN.tpBadge(tp);
   $("tpBadge").innerHTML = SN.tpBadge(tp);
@@ -238,6 +244,7 @@ SN.social().then(({ trustpilot: tp, youtube: yt }) => {
     <small>${SN.esc(r.author)} · ${new Date(r.date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })} · Avis Trustpilot</small></a>`).join("");
   $("tpNote").textContent = `Extraits d'avis publiés sur Trustpilot. Note globale ${String(tp.score).replace(".", ",")}/5 calculée par Trustpilot sur ${tp.count} avis (relevé du ${new Date(tp.checked).toLocaleDateString("fr-FR")}). Les avis ne sont pas vérifiés par Solution Neuf.`;
   $("ytGrid").innerHTML = SN.ytBlock(yt);
+  $("ytLogo").innerHTML = SN.ytLogo(yt.url);
 });
 
 SN.catalog().then(({ programs }) => {

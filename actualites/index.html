@@ -62,7 +62,7 @@
       <div class="meta">Toulouse est la quatrième ville la plus peuplée de France, sa métropole n’a de cesse d’attirer tant les nouveaux habitants que les investisseurs.…</div></div></a><a class="card" href="../comment-bien-preparer-sa-retraite-avec-la-loi-pinel/"><div class="ph" style="background-image:url(../assets/blog/img1-art1.png)"></div>
       <div class="body"><div class="loc">Investissement locatif</div><h3>Comment bien préparer sa retraite avec la loi Pinel ?</h3>
       <div class="meta">Vous préparez votre retraite et cherchez des solutions pour consolider votre pouvoir d’achat ? Investir dans la pierre en profitant du dispositif Pine…</div></div></a></div></div><section class="wrap" style="padding:20px 0 90px">
-  <div style="margin-bottom:30px"><div class="eyebrow">Nos conseils en vidéo</div><h2 style="margin-top:14px">Comprendre l'immobilier neuf <em>avant d'acheter</em></h2></div>
+  <div class="vhead"><div><div class="eyebrow">Nos conseils en vidéo</div><h2 style="margin-top:14px">Comprendre l'immobilier neuf <em>avant d'acheter</em></h2></div><span data-ytlogo></span></div>
   <div data-yt-grid></div>
 </section><div id="ftr"></div>
 <script src="../assets/app.js"></script>
@@ -74,6 +74,7 @@ document.querySelectorAll("[data-wa]").forEach((a) => { a.href = SN.wa(a.dataset
 SN.social().then(({ trustpilot: tp, youtube: yt }) => {
   document.querySelectorAll("[data-tp]").forEach((el) => el.innerHTML = SN.tpBadge(tp));
   document.querySelectorAll("[data-yt-grid]").forEach((el) => el.innerHTML = SN.ytBlock(yt));
+  document.querySelectorAll("[data-ytlogo]").forEach((el) => el.innerHTML = SN.ytLogo(yt.url));
 });
 
 </script>
