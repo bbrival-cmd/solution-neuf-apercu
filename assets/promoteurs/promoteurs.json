@@ -8,6 +8,15 @@
   "caption": false
  },
  {
+  "name": "Bouygues Immobilier",
+  "file": "bouygues-immobilier.png",
+  "w": 320,
+  "h": 112,
+  "programmes": 0,
+  "caption": false,
+  "source": "bouygues-immobilier.com (hors portail Link-App)"
+ },
+ {
   "name": "Vinci Immobilier",
   "file": "vinci-immobilier.png",
   "w": 360,
