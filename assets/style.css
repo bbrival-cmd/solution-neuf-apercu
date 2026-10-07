@@ -368,3 +368,20 @@ table.lots { width: 100%; border-collapse: collapse; background: #fff; border: 1
 .addr { display: flex; align-items: center; gap: 8px; color: var(--navy); font-weight: 500; margin: 2px 0 6px; flex-wrap: wrap; }
 .addr svg { color: var(--orange); flex: none; }
 .addr a { color: var(--gold); font-weight: 700; }
+
+/* ---- Mobile : aucune colonne ne doit dépasser l'écran (Safari iOS) ---- */
+html { overflow-x: clip; }
+@supports not (overflow-x: clip) { body { overflow-x: hidden; } }
+img, svg, video, iframe, canvas { max-width: 100%; }
+h1, h2, h3, h4, .card h3, .prose, .desc { overflow-wrap: break-word; }
+.prose a { overflow-wrap: anywhere; }
+@media (max-width: 860px) {
+  .results-layout, .prog, .art, .band .wrap, .paths, .chat .wrap, .closing .wrap { grid-template-columns: minmax(0, 1fr) !important; }
+  .results-layout > *, .prog > *, .art > *, .grid > *, .results > * { min-width: 0; }
+  .results .grid, .grid, .posts, .reviews { grid-template-columns: minmax(0, 1fr); }
+  .rbar { align-items: flex-start; }
+  .rbar .tools { flex-wrap: wrap; width: 100%; }
+  .rbar .tools select { flex: 1; min-width: 0; }
+  /* Évite le zoom automatique de Safari sur les champs (police < 16 px) */
+  input, select, textarea, .filters input[type=text], .filters select, .fld input, .fld select, .fld textarea { font-size: 16px !important; }
+}
