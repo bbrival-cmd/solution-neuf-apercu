@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Programmes immobiliers neufs en France — Solution Neuf</title>
-  <meta name="description" content="Recherchez parmi plus de 3 000 programmes neufs : appartements et maisons, PTZ, TVA 5,5 %, Jeanbrun, LMNP en résidences gérées.">
+  <meta name="description" content="Recherchez parmi près de 3 000 programmes neufs : appartements et maisons, PTZ, TVA 5,5 %, BRS, dispositif Jeanbrun.">
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" href="assets/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,8 +39,6 @@
     <select id="fmax"><option value="">Sans limite</option><option value="150000">150 000 €</option><option value="200000">200 000 €</option><option value="250000">250 000 €</option><option value="300000">300 000 €</option><option value="400000">400 000 €</option><option value="500000">500 000 €</option><option value="750000">750 000 €</option></select>
     <h4>Dispositif</h4>
     <select id="flaw"><option value="">Tous</option></select>
-    <h4>Type de résidence</h4>
-    <select id="fres"><option value="">Indifférent</option><option value="*">Toutes les résidences avec services</option></select>
     <h4>Livraison</h4>
     <div class="chips" data-f="liv"><button class="chip" data-v="now">Livré</button><button class="chip" data-v="2026">2026</button><button class="chip" data-v="2027">2027</button><button class="chip" data-v="2028">2028 et +</button></div>
     <button class="reset" id="reset">Réinitialiser les filtres</button>
@@ -174,7 +172,7 @@ const bind = (id, key) => { const el = document.getElementById(id); el.value = s
 document.getElementById("more").onclick = () => { st.n += PAGE; render(); };
 document.getElementById("reset").onclick = () => {
   Object.assign(st, { q: "", projet: "", t: [], nat: [], max: "", law: "", res: "", liv: "", n: PAGE });
-  ["fq", "fmax", "flaw", "fres"].forEach((id) => document.getElementById(id).value = ""); paintChips(); render();
+  ["fq", "fmax", "flaw"].forEach((id) => document.getElementById(id).value = ""); paintChips(); render();
 };
 document.querySelectorAll(".toggle button").forEach((b) => b.onclick = () => {
   st.view = b.dataset.v;
@@ -188,10 +186,8 @@ SN.catalog().then(({ programs }) => {
   const laws = {}; programs.forEach((p) => p.l.forEach((l) => laws[l] = (laws[l] || 0) + 1));
   document.getElementById("flaw").innerHTML += Object.entries(laws).filter(([, n]) => n >= 4).sort((a, b) => b[1] - a[1])
     .map(([l, n]) => `<option value="${SN.esc(l)}">${SN.esc(l)} (${n})</option>`).join("");
-  const res = {}; programs.forEach((p) => p.r && (res[p.r] = (res[p.r] || 0) + 1));
-  document.getElementById("fres").innerHTML += Object.entries(res).sort((a, b) => b[1] - a[1]).map(([r, n]) => `<option value="${r}">${r} (${n})</option>`).join("");
   document.getElementById("cities").innerHTML = [...new Set(programs.map((p) => SN.title(p.c)))].sort().map((c) => `<option value="${SN.esc(c)}">`).join("");
-  bind("fq", "q"); bind("fmax", "max"); bind("flaw", "law"); bind("fres", "res"); bind("sort", "sort");
+  bind("fq", "q"); bind("fmax", "max"); bind("flaw", "law"); bind("sort", "sort");
   paintChips(); render();
 });
 </script>

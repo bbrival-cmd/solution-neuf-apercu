@@ -23,7 +23,7 @@ SN.SITE = new URL("..", document.currentScript.src).href;
         ["Suis-je éligible au PTZ pour ce programme ?", SN.wa(`Bonjour, suis-je éligible au PTZ pour le programme ${SN.title(prog.n)} à ${SN.title(prog.c)} ? Lien : ${location.href}`)],
       ] : [
         ["Je cherche ma résidence principale", SN.wa("Bonjour, je cherche ma résidence principale dans le neuf. Pouvez-vous m'aider ?")],
-        ["Je souhaite investir (Jeanbrun, LMNP)", SN.wa("Bonjour, je souhaite investir dans l'immobilier neuf (Jeanbrun ou LMNP). Pouvez-vous m'aider ?")],
+        ["Je souhaite investir (dispositif Jeanbrun)", SN.wa("Bonjour, je souhaite investir dans l'immobilier neuf avec le dispositif Jeanbrun. Pouvez-vous m'aider ?")],
         ["Simuler mon PTZ et ma capacité d'achat", SN.wa("Bonjour, je souhaite simuler mon PTZ et ma capacité d'achat pour un logement neuf.")],
       ];
       w.querySelector("#waQR").innerHTML = qr.map(([t, u]) => `<a class="qr" target="_blank" rel="noopener" href="${u}">${SN.esc(t)}</a>`).join("<div style='height:8px'></div>");
