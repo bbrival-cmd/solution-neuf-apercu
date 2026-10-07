@@ -220,10 +220,10 @@ $("heroWa").href = SN.wa(); $("heroWa").innerHTML = SN.WA_ICON + "Parler à un c
 $("finalWa").href = SN.wa(); $("finalWa").innerHTML = SN.WA_ICON + "Écrire sur WhatsApp";
 
 const CITIES = [
-  { n: "Paris & Île-de-France", d: ["75", "92", "93", "94", "77", "78", "91", "95"], c: [48.86, 2.35], z: 10, q: "75" },
+  { n: "Paris & petite couronne", d: ["75", "92", "93", "94"], c: [48.86, 2.35], z: 11, q: "75", r: 15 },
   { n: "Lyon", d: ["69"], c: [45.76, 4.84], z: 11, q: "69" },
   { n: "Bordeaux", d: ["33"], c: [44.84, -0.58], z: 11, q: "33" },
-  { n: "Marseille & Aix", d: ["13"], c: [43.4, 5.4], z: 10, q: "13" },
+  { n: "Marseille & Aix", d: ["13"], c: [43.4, 5.4], z: 10, q: "13", r: 25 },
   { n: "Nantes", d: ["44"], c: [47.22, -1.55], z: 11, q: "44" },
   { n: "Toulouse", d: ["31"], c: [43.6, 1.44], z: 11, q: "31" },
   { n: "Lille", d: ["59"], c: [50.63, 3.06], z: 11, q: "59" },
@@ -284,7 +284,9 @@ SN.catalog().then(({ programs }) => {
   /* 2. Tour de France : chapitres + carte qui vole */
   const chapters = $("chapters");
   CITIES.forEach((c, i) => {
-    const list = programs.filter((p) => c.d.includes(p.d));
+    // Agglomération : rayon autour du centre-ville (et non le département entier)
+    const km = (p) => Math.hypot((p.lat - c.c[0]) * 111, (p.lng - c.c[1]) * 111 * Math.cos(c.c[0] * Math.PI / 180));
+    const list = programs.filter((p) => p.lat && km(p) <= (c.r || 20));
     c.list = list;
     const min = Math.min(...list.filter((p) => p.a).map((p) => p.a));
     const tops = list.filter((p) => p.img && p.a && !p.dl).slice(0, 4);
